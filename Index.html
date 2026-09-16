@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Notion Flip Clock</title>
+
+<style>
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+body {
+    background: transparent;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
+
+.flip-clock-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px 10px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CLOCK
+========================================================= */
+
+.flip-clock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   DIGIT GROUP
+========================================================= */
+
+.digit-group {
+    display: flex;
+    gap: 6px;
+}
+
+
+/* =========================================================
+   DIGIT
+========================================================= */
+
+.flip-digit {
+    position: relative;
+
+    width: 70px;
+    height: 82px;
+
+    perspective: 700px;
+}
+
+
+/* =========================================================
+   STATIC CARD
+========================================================= */
+
+.static-card {
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    border-radius: 9px;
+
+    background:
+    linear-gradient(
+        to bottom,
+        #6F4E37 0%,
+        #5A3A29 48%,
+        #4A2F22 50%,
+        #63412D 100%
+    );
+
+    box-shadow:
+        0 6px 14px rgba(0,0,0,0.20),
+        inset 0 1px 1px rgba(255,255,255,0.07);
+}
+
+
+/* =========================================================
+   CENTER SPLIT LINE
+========================================================= */
+
+.static-card::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 50%;
+
+    height: 1px;
+
+    background: rgba(0,0,0,0.55);
+
+    z-index: 10;
+}
+
+
+/* =========================================================
+   DIGIT NUMBER
+========================================================= */
+
+.digit-number {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #f4f4f4;
+
+    font-size: 52px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    font-variant-numeric: tabular-nums;
+
+    user-select: none;
+}
+
+
+/* =========================================================
+   FLIP PANELS
+========================================================= */
+
+.flip-panel {
+    position: absolute;
+
+    left: 0;
+
+    width: 100%;
+    height: 50%;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #292929,
+            #1c1c1c
+        );
+
+    backface-visibility: hidden;
+
+    -webkit-backface-visibility: hidden;
+
+    z-index: 20;
+}
+
+
+/* TOP PANEL */
+
+.flip-top {
+    top: 0;
+
+    transform-origin: bottom center;
+
+    border-radius: 9px 9px 0 0;
+}
+
+
+/* BOTTOM PANEL */
+
+.flip-bottom {
+    bottom: 0;
+
+    transform-origin: top center;
+
+    border-radius: 0 0 9px 9px;
+}
+
+
+/* NUMBER POSITIONING */
+
+.flip-panel .digit-number {
+    height: 82px;
+}
+
+.flip-top .digit-number {
+    top: 0;
+}
+
+.flip-bottom .digit-number {
+    top: -41px;
+}
+
+
+/* =========================================================
+   FLIP ANIMATION
+========================================================= */
+
+.flip-top.animate {
+    animation:
+        flipTop
+        0.55s
+        cubic-bezier(0.37, 0.01, 0.2, 1)
+        forwards;
+}
+
+
+@keyframes flipTop {
+
+    0% {
+        transform: rotateX(0deg);
+        filter: brightness(1);
+    }
+
+    40% {
+        filter: brightness(0.85);
+    }
+
+    100% {
+        transform: rotateX(-90deg);
+        filter: brightness(0.65);
+    }
+}
+
+
+/* =========================================================
+   COLON
+========================================================= */
+
+.clock-colon {
+    position: relative;
+
+    width: 18px;
+    height: 82px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 3px;
+}
+
+
+/* Colon dots */
+
+.clock-colon::before,
+.clock-colon::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    width: 8px;
+    height: 8px;
+
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+
+    background: #777;
+}
+
+
+.clock-colon::before {
+    top: 30px;
+}
+
+.clock-colon::after {
+    bottom: 30px;
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+.clock-date {
+
+    margin-top: 18px;
+
+    text-align: center;
+
+    color: #666;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    letter-spacing: 2px;
+
+    line-height: 1.4;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .flip-clock {
+        gap: 5px;
+    }
+
+    .digit-group {
+        gap: 4px;
+    }
+
+    .flip-digit {
+        width: 55px;
+        height: 68px;
+    }
+
+    .digit-number {
+        font-size: 42px;
+    }
+
+    .flip-panel .digit-number {
+        height: 68px;
+    }
+
+    .flip-bottom .digit-number {
+        top: -34px;
+    }
+
+    .clock-colon {
+        width: 14px;
+        height: 68px;
+        margin: 0 1px;
+    }
+
+    .clock-colon::before {
+        top: 25px;
+    }
+
+    .clock-colon::after {
+        bottom: 25px;
+    }
+
+    .clock-date {
+        font-size: 11px;
+        letter-spacing: 1.3px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .flip-clock-wrapper {
+        padding: 15px 5px;
+    }
+
+    .flip-clock {
+        gap: 3px;
+    }
+
+    .digit-group {
+        gap: 3px;
+    }
+
+    .flip-digit {
+        width: 44px;
+        height: 58px;
+    }
+
+    .digit-number {
+        font-size: 34px;
+    }
+
+    .flip-panel .digit-number {
+        height: 58px;
+    }
+
+    .flip-bottom .digit-number {
+        top: -29px;
+    }
+
+    .clock-colon {
+        width: 10px;
+        height: 58px;
+    }
+
+    .clock-colon::before,
+    .clock-colon::after {
+        width: 6px;
+        height: 6px;
+    }
+
+    .clock-colon::before {
+        top: 21px;
+    }
+
+    .clock-colon::after {
+        bottom: 21px;
+    }
+
+    .clock-date {
+        font-size: 9px;
+        letter-spacing: 0.8px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .flip-top.animate {
+        animation-duration: 0.01s;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="flip-clock-wrapper">
+
+    <!-- =====================================================
+         CLOCK
+    ====================================================== -->
+
+    <div class="flip-clock" aria-label="Current time">
+
+        <!-- HOURS -->
+
+        <div class="digit-group">
+
+            <div class="flip-digit" id="hour-tens">
+                <div class="static-card">
+                    <div class="digit-number">0</div>
+                </div>
+            </div>
+
+            <div class="flip-digit" id="hour-units">
+                <div class="static-card">
+                    <div class="digit-number">0</div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- COLON -->
+
+        <div class="clock-colon" aria-hidden="true"></div>
+
+
+        <!-- MINUTES -->
+
+        <div class="digit-group">
+
+            <div class="flip-digit" id="minute-tens">
+                <div class="static-card">
+                    <div class="digit-number">0</div>
+                </div>
+            </div>
+
+            <div class="flip-digit" id="minute-units">
+                <div class="static-card">
+                    <div class="digit-number">0</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DATE
+    ====================================================== -->
+
+    <div
+        class="clock-date"
+        id="clock-date"
+        aria-live="polite">
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   FLIP CLOCK
+========================================================= */
+
+let previousTime = null;
+
+
+/*
+    Creates the 3D flip animation
+    for a single digit.
+*/
+
+function flipDigit(element, oldValue, newValue) {
+
+    /* Don't animate if nothing changed */
+
+    if (oldValue === newValue) {
+        return;
+    }
+
+
+    /*
+        Find the static card.
+    */
+
+    const staticCard =
+        element.querySelector(".static-card");
+
+
+    /*
+        Update the permanent card
+        to the new number.
+    */
+
+    staticCard.querySelector(".digit-number").textContent =
+        newValue;
+
+
+    /*
+        Create the animated top flap.
+    */
+
+    const topPanel =
+        document.createElement("div");
+
+    topPanel.className =
+        "flip-panel flip-top";
+
+
+    /*
+        Put the old number
+        on the animated flap.
+    */
+
+    const topNumber =
+        document.createElement("div");
+
+    topNumber.className =
+        "digit-number";
+
+    topNumber.textContent =
+        oldValue;
+
+
+    topPanel.appendChild(topNumber);
+
+    element.appendChild(topPanel);
+
+
+    /*
+        Force browser layout before animation.
+        This ensures the animation starts correctly.
+    */
+
+    void topPanel.offsetWidth;
+
+
+    /*
+        Start animation.
+    */
+
+    requestAnimationFrame(function() {
+
+        topPanel.classList.add("animate");
+
+    });
+
+
+    /*
+        Remove animation panel
+        after it finishes.
+    */
+
+    setTimeout(function() {
+
+        if (topPanel.parentNode) {
+            topPanel.parentNode.removeChild(topPanel);
+        }
+
+    }, 600);
+}
+
+
+/* =========================================================
+   UPDATE CLOCK
+========================================================= */
+
+function updateClock() {
+
+    const now = new Date();
+
+
+    /*
+        Get local time.
+
+        24-hour format:
+        00:00 → 23:59
+    */
+
+    const hours =
+        String(now.getHours()).padStart(2, "0");
+
+    const minutes =
+        String(now.getMinutes()).padStart(2, "0");
+
+
+    /*
+        Create four digits.
+    */
+
+    const currentTime =
+        hours + minutes;
+
+
+    /*
+        First load:
+        don't animate.
+    */
+
+    if (previousTime === null) {
+
+        document
+            .querySelector("#hour-tens .digit-number")
+            .textContent = hours[0];
+
+        document
+            .querySelector("#hour-units .digit-number")
+            .textContent = hours[1];
+
+        document
+            .querySelector("#minute-tens .digit-number")
+            .textContent = minutes[0];
+
+        document
+            .querySelector("#minute-units .digit-number")
+            .textContent = minutes[1];
+
+    }
+
+
+    /*
+        Subsequent updates:
+        animate only changed digits.
+    */
+
+    else {
+
+        flipDigit(
+            document.getElementById("hour-tens"),
+            previousTime[0],
+            hours[0]
+        );
+
+        flipDigit(
+            document.getElementById("hour-units"),
+            previousTime[1],
+            hours[1]
+        );
+
+        flipDigit(
+            document.getElementById("minute-tens"),
+            previousTime[2],
+            minutes[0]
+        );
+
+        flipDigit(
+            document.getElementById("minute-units"),
+            previousTime[3],
+            minutes[1]
+        );
+    }
+
+
+    /*
+        Save current time.
+    */
+
+    previousTime =
+        currentTime;
+
+
+    /* =====================================================
+       DATE
+    ====================================================== */
+
+    const date =
+        now.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            }
+        );
+
+
+    /*
+        Convert to uppercase.
+
+        Example:
+        SATURDAY, SEPTEMBER 12, 2026
+    */
+
+    document.getElementById("clock-date")
+        .textContent =
+        date.toUpperCase();
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+updateClock();
+
+
+/*
+    Check the time every second.
+
+    The display itself only changes when
+    the minute changes.
+*/
+
+setInterval(updateClock, 1000);
+
+</script>
+
+</body>
+</html>
