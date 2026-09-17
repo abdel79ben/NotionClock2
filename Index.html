@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: transparent;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #3B8D6E;
+
+        width: 100vw;
+        height: 100vh;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        overflow: hidden;
+    }
+
+    .clock-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* LARGE TIME */
+    .time {
+        font-size: 110px;
+        font-weight: 800;
+        line-height: 0.95;
+        letter-spacing: 3px;
+        white-space: nowrap;
+    }
+
+    /* DATE */
+    .date {
+        margin-top: 14px;
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+
+        .time {
+            font-size: 80px;
+        }
+
+        .date {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="clock-container">
+
+    <div class="time" id="time">00:00</div>
+
+    <div class="date" id="date">
+        Thursday, September 17, 2026
+    </div>
+
+</div>
+
+<script>
+
+function updateClock() {
+
+    const now = new Date();
+
+    // 24-hour time — no seconds
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    document.getElementById("time").textContent =
+        `${hours}:${minutes}`;
+
+    // Date
+    const dateOptions = {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    };
+
+    document.getElementById("date").textContent =
+        now.toLocaleDateString('en-US', dateOptions);
+}
+
+updateClock();
+
+setInterval(updateClock, 1000);
+
+</script>
+
+</body>
+</html>
